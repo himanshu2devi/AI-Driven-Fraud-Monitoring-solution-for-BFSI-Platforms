@@ -1,0 +1,8 @@
+[2025-04-28 20:00:53,896] INFO Creating topic notification with configuration {} and initial partition assignment HashMap(0 -> ArrayBuffer(0)) (kafka.zk.AdminZkClient)
+[2025-04-28 20:00:53,998] INFO [Controller id=0, targetBrokerId=0] Node 0 disconnected. (org.apache.kafka.clients.NetworkClient)
+[2025-04-28 20:00:54,027] INFO [ReplicaFetcherManager on broker 0] Removed fetcher for partitions Set(notification-0) (kafka.server.ReplicaFetcherManager)
+[2025-04-28 20:00:54,111] INFO [LogLoader partition=notification-0, dir=/tmp/kafka-logs] Loading producer state till offset 0 with message format version 2 (kafka.log.UnifiedLog$)
+[2025-04-28 20:00:54,136] INFO Created log for partition notification-0 in /tmp/kafka-logs/notification-0 with properties {} (kafka.log.LogManager)
+[2025-04-28 20:00:54,144] INFO [Partition notification-0 broker=0] No checkpointed highwatermark is found for partition notification-0 (kafka.cluster.Partition)
+[2025-04-28 20:00:54,148] INFO [Partition notification-0 broker=0] Log loaded for partition notification-0 with initial high watermark 0 (kafka.cluster.Partition)
+[2025-04-28 20:10:54,128] INFO [NodeToControllerChannelManager id=0 name=forwarding] Node 0 disconnected. (org.apache.kafka.clients.NetworkClient)

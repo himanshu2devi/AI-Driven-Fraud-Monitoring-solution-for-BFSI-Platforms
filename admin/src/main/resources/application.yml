@@ -1,0 +1,37 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: admin-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/frauddetectiondb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  logging:
+    level:
+      root: INFO
+      com.fraud_detection: DEBUG
+  sql:
+    init:
+      mode: never
+  jpa:
+    show-sql: ${SHOW_SQL:true}
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  profiles:
+    active: dev
+application:
+  feature:
+    enable-fraud-detection: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true

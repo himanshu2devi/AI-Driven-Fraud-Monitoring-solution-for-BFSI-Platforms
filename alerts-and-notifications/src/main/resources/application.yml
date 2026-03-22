@@ -1,0 +1,104 @@
+server:
+  port: 8093
+  servlet:
+    context-path: /${spring.application.name}
+
+spring:
+  application:
+    name: notification
+  jpa:
+    show-sql: ${SHOW_SQL:true}
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:postgresql://localhost:5432/frauddetectiondb
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: never
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: 2024tm93181@wilp.bits-pilani.ac.in
+    password: pviv ogxo pxez tzff
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: false
+
+
+  kafka:
+    consumer:
+      enable-auto-commit: ${KAFKA_CONSUMER_ENABLE_AUTO_COMMIT:false}
+      auto-commit-interval-ms: ${KAFKA_CONSUMER_AUTO_COMMIT_INTERVAL_MS:5000}
+      session-timeout-ms: ${KAFKA_CONSUMER_SESSION_TIMEOUT_MS:45000}
+      heartbeat-interval-ms: ${KAFKA_CONSUMER_HEARTBEAT_INTERVAL_MS:3000}
+      max-poll-records: ${KAFKA_CONSUMER_MAX_POLL_RECORDS:500}
+      max-poll-interval-ms: ${KAFKA_CONSUMER_MAX_POLL_INTERVAL_MS:300000}
+      bootstrap-servers: ${KAFKA_BROKERS:localhost:9092}
+      auto-offset-reset: ${KAFKA_CONSUMER_AUTO_OFFSET_RESET:latest}
+    properties:
+      security.protocol: ${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}
+      sasl.mechanism: ${KAFKA_SECURITY_SASL_MECHANISM:PLAIN}
+
+
+
+application:
+  kafka:
+    notification-consumer-topic: ${KAFKA_TOPIC_NOTIFICATION_CONSUMER:notification-consumer-topic}
+    process-message-threadpool-size: ${PROCESS_MESSAGE_THREADPOOL_SIZE:25}
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:asset-rest-service}
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+kafka:
+  transaction:
+    topic: transaction-notification
+    servers: localhost:9092
+    ssl_endpoint_algorithm: ""
+    consumerGroup: TRANSACTION_CONSUMER_GROUP
+    maxPollRecords: 1000
+    maxPollIntervals: 30000
+    sessionTimeout: 60000
+    concurrency: 3
+    idleEventInterval : 60000
+    security_enabled: false
+    security_protocol: SSL
+  fraud:
+    topic: fraud-alerts
+    servers: localhost:9092
+    ssl_endpoint_algorithm: ""
+    consumerGroup: FRAUD_CONSUMER_GROUP
+    maxPollRecords: 1000
+    maxPollIntervals: 30000
+    sessionTimeout: 60000
+    concurrency: 3
+    idleEventInterval: 60000
+    security_enabled: false
+    security_protocol: SSL
+  fraud1:
+    topic: notification
+    servers: localhost:9092
+    ssl_endpoint_algorithm: ""
+    consumerGroup: FRAUD1_CONSUMER_GROUP
+    maxPollRecords: 1000
+    maxPollIntervals: 30000
+    sessionTimeout: 60000
+    concurrency: 3
+    idleEventInterval: 60000
+    security_enabled: false
+    security_protocol: SSL
