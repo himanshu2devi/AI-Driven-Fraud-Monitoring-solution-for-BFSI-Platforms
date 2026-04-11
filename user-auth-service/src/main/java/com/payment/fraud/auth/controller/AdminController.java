@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.payment.fraud.auth.entity.User;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -98,6 +99,20 @@ public class AdminController {
         }
         userService.removePermission(userId, permission);
         return ResponseEntity.ok("Permission removed successfully");
+    }
+
+
+    @GetMapping("/roles/{username}")
+    public ResponseEntity<Set<String>> getUserRoles(@PathVariable String username) {
+
+        User user = userService.findByUsername(username);
+
+        Set<String> roles = user.getRoles()
+                .stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toSet());
+
+        return ResponseEntity.ok(roles);
     }
 
 

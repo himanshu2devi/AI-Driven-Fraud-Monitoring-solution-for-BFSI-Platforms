@@ -2,9 +2,12 @@ package com.wipro.fraud.aiassistant.controller;
 
 import com.wipro.fraud.aiassistant.dto.AssistantRequest;
 import com.wipro.fraud.aiassistant.dto.AssistantResponse;
+import com.wipro.fraud.aiassistant.service.ConversationMemoryService;
 import com.wipro.fraud.aiassistant.service.FraudAssistantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/fraud-assistant")
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class FraudAssistantController {
 
     private final FraudAssistantService fraudAssistantService;
+    private final ConversationMemoryService conversationMemoryService;
 
     @PostMapping("/ask")
     public AssistantResponse askAssistant(@RequestBody AssistantRequest request) {
@@ -19,4 +23,12 @@ public class FraudAssistantController {
         return fraudAssistantService.processQuery(request);
 
     }
+
+    @GetMapping("/recent")
+    public List<String> getRecentQueries(
+            @RequestParam String userId) {
+
+        return conversationMemoryService.getRecentUserQueries(userId);
+    }
 }
+

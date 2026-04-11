@@ -1,0 +1,79 @@
+
+
+
+/* ===============================
+   RESET
+=============================== */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* ===============================
+   DEFAULT BACKGROUND
+=============================== */
+body {
+  background: linear-gradient(135deg, #1e2a38, #2c3e50);
+}
+
+/* ===============================
+   ONLY CENTER AUTH SCREENS
+=============================== */
+.auth-page {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===============================
+   AUTH CARD
+=============================== */
+.auth-container {
+  width: 350px;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+/* INPUT */
+.auth-container input,
+.auth-container select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* BUTTON */
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  background: #2c7be5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.auth-container button:hover {
+  background: #1a5fd0;
+}
+
+/* LINK */
+.link {
+  margin-top: 15px;
+  color: #2c7be5;
+  cursor: pointer;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}

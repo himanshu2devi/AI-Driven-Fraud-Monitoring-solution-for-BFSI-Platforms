@@ -3,9 +3,11 @@ package com.fraud_detection.Fraud_Management.Service;
 import com.fraud_detection.Fraud_Management.entity.BlacklistedAccount;
 import com.fraud_detection.Fraud_Management.repository.BlacklistedAccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class BlacklistService {
@@ -27,5 +29,11 @@ public class BlacklistService {
 
     public boolean isBlacklisted(String accountNumber) {
         return blacklistedAccountRepository.findByAccountNumber(accountNumber).isPresent();
+    }
+
+    public List<BlacklistedAccount> getAllBlockedAccounts() {
+        return blacklistedAccountRepository.findAll(
+                Sort.by(Sort.Direction.DESC, "blockedAt")
+        );
     }
 }

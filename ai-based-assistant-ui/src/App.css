@@ -1,0 +1,314 @@
+/* ===============================
+   GLOBAL
+=============================== */
+* {
+  box-sizing: border-box;
+}
+
+/* ===============================
+   APP LAYOUT
+=============================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+/* HEADER */
+.header {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: #2c7be5;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* MAIN */
+.main-container {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+/* ===============================
+   SIDEBAR
+=============================== */
+.sidebar {
+  width: 250px;
+  min-width: 250px;
+  background: #1e272e;
+  color: white;
+  padding: 20px;
+}
+
+/* ===============================
+   CHAT
+=============================== */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-window {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #eef2f7;
+}
+
+/* MESSAGES */
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* MESSAGE ALIGNMENT */
+.message-wrapper {
+  display: flex;
+  margin: 10px 0;
+}
+
+.message-wrapper.user {
+  justify-content: flex-end;
+}
+
+.message-wrapper.bot {
+  justify-content: flex-start;
+}
+
+/* MESSAGE BUBBLE */
+.message-bubble {
+  max-width: 60%;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.message-wrapper.user .message-bubble {
+  background: #2c7be5;
+  color: white;
+}
+
+.message-wrapper.bot .message-bubble {
+  background: white;
+  border: 1px solid #ddd;
+}
+
+/* INPUT */
+.input-box {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: white;
+}
+
+.input-box input {
+  flex: 1;
+  padding: 10px;
+}
+
+.input-box button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  background: #2c7be5;
+  color: white;
+  border: none;
+}
+
+/* TYPING */
+.typing {
+  display: flex;
+  align-items: center;
+  margin: 10px;
+}
+
+.source {
+  display: inline-block;
+  font-size: 10px;
+  color: #666;
+  margin-top: 8px;
+  background: #f1f1f1;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.typing-bubble span {
+  width: 8px;
+  height: 8px;
+  background: gray;
+  border-radius: 50%;
+  margin-right: 4px;
+  animation: blink 1.4s infinite;
+}
+
+/* ===============================
+   TYPING INDICATOR (PRO STYLE)
+=============================== */
+
+.typing-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 20px;
+}
+
+/* Bubble like WhatsApp */
+.typing-bubble {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 12px;
+  display: flex;
+  gap: 5px;
+}
+
+/* Dots */
+.typing-bubble span {
+  width: 6px;
+  height: 6px;
+  background: #999;
+  border-radius: 50%;
+  animation: typingBounce 1.3s infinite;
+}
+
+/* Delay each dot */
+.typing-bubble span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-bubble span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Smooth bounce animation */
+@keyframes typingBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* Text */
+.typing-label {
+  font-size: 12px;
+  color: #777;
+  font-style: italic;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #1e1e2f;
+  width: 70%;
+  max-height: 80%;
+  border-radius: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  color: white;
+}
+
+.maximized {
+  width: 95%;
+  height: 95%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #444;
+  padding: 10px;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+.kpi-card {
+  background: #f5f7fa;
+  padding: 15px;
+  border-radius: 10px;
+  width: 150px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.kpi-card h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.kpi-card p {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.kpi-card.fraud {
+  background: #ffe5e5;
+  color: red;
+}
+
+.kpi-card.alert {
+  background: #fff4e5;
+  color: orange;
+}
+
+.kpi-card.rate {
+  background: #e5f0ff;
+  color: #2b6cb0;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.data-table th {
+  background: #2d3748;
+  color: white;
+  padding: 10px;
+}
+
+.data-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.data-table tr:hover {
+  background-color: #f1f1f1;
+}

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import jakarta.persistence.PrePersist;
 
 @Entity
 @Table(name="conversation_memory")
@@ -18,7 +19,17 @@ public class ConversationMemory {
 
     private String role;
 
+    @Column(columnDefinition = "TEXT")
     private String message;
 
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

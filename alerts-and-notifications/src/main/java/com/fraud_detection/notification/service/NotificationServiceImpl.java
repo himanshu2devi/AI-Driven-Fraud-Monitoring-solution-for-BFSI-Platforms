@@ -68,8 +68,8 @@ public class NotificationServiceImpl implements NotificationService {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(username);
         mailMessage.setTo(emailId);
-        mailMessage.setSubject("Notification");
-        mailMessage.setText("Your Transaction is "+transactionKafkaMessage.getStatus());
+        mailMessage.setSubject("BANK NOTIFICATION : TRANSACTION ALERT");
+        mailMessage.setText("Your recent Transaction is "+transactionKafkaMessage.getStatus()+"If you have not initiated this transaction,inform bank immediately.");
 
         try {
             mailSender.send(mailMessage);

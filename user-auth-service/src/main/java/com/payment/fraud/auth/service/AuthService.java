@@ -47,19 +47,34 @@ public class AuthService {
     private JwtTokenProvider tokenProvider;
 
     public String register(RegisterRequest req) {
+
         User user = new User();
         user.setUsername(req.getUsername());
         user.setEmail(req.getEmail());
         user.setPassword(encoder.encode(req.getPassword()));
 
-        String roleName = (req.getRole() != null) ? req.getRole() : "ROLE_USER";
+        // 🔥 Controlled roles (IMPORTANT)
+        String roleName = req.getRole();
+
+        if (roleName == null || roleName.isBlank()) {
+            roleName = "ROLE_USER";
+        }
+
+        // ✅ Only allow these roles (prevent garbage input)
+        if (!roleName.equals("ROLE_USER") &&
+                !roleName.equals("ROLE_FRAUDANALYST") &&
+                !roleName.equals("ROLE_ADMIN")) {
+
+            throw new RuntimeException("Invalid role");
+        }
+
         Roles role = roleRepo.findByName(roleName)
                 .orElseThrow(() -> new RuntimeException("Role not found"));
 
-      //  Roles role = roleRepo.findByName("ROLE_USER").orElseThrow();
         user.getRoles().add(role);
 
         userRepo.save(user);
+
         return "User registered";
     }
 
@@ -125,12 +140,12 @@ public class AuthService {
         }
 
         // Check if user is admin or not
-        boolean isAdmin = user.getRoles()
+        boolean isUser = user.getRoles()
                 .stream()
-                .anyMatch(role -> role.getName().equalsIgnoreCase("ROLE_ADMIN"));
+                .anyMatch(role -> role.getName().equalsIgnoreCase("ROLE_USER"));
 
-        // For non-admins, check account status
-        if (!isAdmin) {
+        // For user, check account status
+        if (isUser) {
             Account account = accountRepository.findByUserId(user.getId())
                     .orElseThrow(() -> new RuntimeException("Account not found for user"));
 
@@ -156,8 +171,8 @@ public class AuthService {
             if (attempts >= 3) {
                 user.setEnabled(false);
 
-                // Only disable account if it's not an admin
-                if (!isAdmin) {
+                // Only disable account if it is user
+                if (isUser) {
                     accountRepository.findByUserId(user.getId()).ifPresent(account -> {
                         account.setAccountEnabled(false);
                         accountRepository.save(account);

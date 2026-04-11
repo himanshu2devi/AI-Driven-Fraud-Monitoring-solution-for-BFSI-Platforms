@@ -1,8 +1,10 @@
 package com.fraud_detection.Fraud_Management.Kafka;
 
+import com.fraud_detection.Fraud_Management.AI.FraudScoringService;
 import com.fraud_detection.Fraud_Management.DTO.AlertDTO;
 import com.fraud_detection.Fraud_Management.DTO.NotificationDTO;
 import com.fraud_detection.Fraud_Management.DTO.TransactionDTO;
+import com.fraud_detection.Fraud_Management.ruleengine.ResultHolder;
 import com.fraud_detection.Fraud_Management.ruleengine.TransactionResult;
 import com.fraud_detection.Fraud_Management.ruleengine.TransactionRuleEngine;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fraud_detection.Fraud_Management.ruleengine.*;
 
 import static com.fraud_detection.Fraud_Management.Kafka.KafkaTopics.*;
 
@@ -23,14 +26,24 @@ public class TransactionProducer {
     private final KafkaTemplate<String, AlertDTO> alertKafkaTemplate;
     private final KafkaTemplate<String, NotificationDTO> notificationKafkaTemplate;
 
-    public TransactionProducer(TransactionRuleEngine ruleEngine, KafkaTemplate<String, TransactionDTO> kafkaTemplate, KafkaTemplate<String, AlertDTO> alertKafkaTemplate, KafkaTemplate<String, NotificationDTO> notificationKafkaTemplate) {
+    private final FraudScoringService fraudScoringService;
+
+    public TransactionProducer(
+            TransactionRuleEngine ruleEngine,
+            KafkaTemplate<String, TransactionDTO> kafkaTemplate,
+            KafkaTemplate<String, AlertDTO> alertKafkaTemplate,
+            KafkaTemplate<String, NotificationDTO> notificationKafkaTemplate,
+            FraudScoringService fraudScoringService
+    ) {
         this.ruleEngine = ruleEngine;
         this.kafkaTemplate = kafkaTemplate;
         this.alertKafkaTemplate = alertKafkaTemplate;
         this.notificationKafkaTemplate = notificationKafkaTemplate;
+        this.fraudScoringService = fraudScoringService;
     }
 
     public TransactionResult processTransaction(TransactionDTO transaction) {
+
         if (transaction.getTransactionType() == null) {
             logger.warn("Received transaction with null transactionType: {}", transaction);
             return new TransactionResult(null, "Transaction type is null");
@@ -38,20 +51,33 @@ public class TransactionProducer {
 
         logger.info("Processing transaction: {}", transaction);
 
-        // Evaluate the transaction (calling rule engine here)
-        TransactionResult result = ruleEngine.evaluateTransaction(transaction);
+        // 🔥 STEP 1: Rule Engine
+        ResultHolder holder = ruleEngine.evaluateTransaction(transaction);
 
-        if (result == null || result.getStatus() == null) {
-            logger.error("TransactionResult or status is null for transaction: {}", transaction);
+        // 🔥 STEP 2: AI SCORING
+        fraudScoringService.enrichWithAiScore(holder, transaction);
+
+        // 🔥 STEP 3: NULL CHECK
+        if (holder == null || holder.getStatus() == null) {
+            logger.error("ResultHolder or status is null for transaction: {}", transaction);
             return new TransactionResult(null, "Transaction evaluation failed");
         }
 
-        // Always send notification for each txn
+        // 🔥 STEP 4: Convert to TransactionResult
+        TransactionResult result = new TransactionResult(
+                holder.getStatus(),
+                "Risk: " + holder.getRiskLevel() +
+                        " | Score: " + holder.getFinalScore() +
+                        " | Reason: " + holder.getReason()
+        );
+
+        // 🔥 STEP 5: SEND NOTIFICATION
         sendNotification(transaction, result);
         logger.info("Transaction evaluation result: {}", result.getStatus());
 
-        // Sending to topics based on result
+        // 🔥 STEP 6: SEND TO KAFKA BASED ON RESULT
         switch (result.getStatus()) {
+
             case VALID:
                 kafkaTemplate.send(VALID_TXN_TOPIC, transaction.getTransactionId(), transaction);
                 logger.info("Transaction is VALID: {}", transaction.getTransactionId());
@@ -59,7 +85,7 @@ public class TransactionProducer {
 
             case FRAUD:
                 kafkaTemplate.send(ROLLBACK_TXN_TOPIC, transaction.getTransactionId(), transaction);
-                // Create fraud alert only if the result contains valid reason and transactionId
+
                 if (result.getReason() != null && transaction.getTransactionId() != null) {
                     AlertDTO fraudAlert = new AlertDTO(
                             transaction.getTransactionId(),
@@ -75,7 +101,7 @@ public class TransactionProducer {
 
             case ALERT:
                 kafkaTemplate.send(VALID_TXN_TOPIC, transaction.getTransactionId(), transaction);
-                // Create alert only if the result contains valid reason and transactionId
+
                 if (result.getReason() != null && transaction.getTransactionId() != null) {
                     AlertDTO alert = new AlertDTO(
                             transaction.getTransactionId(),
@@ -93,7 +119,7 @@ public class TransactionProducer {
                 logger.error("Unknown transaction status: {}", result.getStatus());
         }
 
-        return result; // Ensure you're returning the result here
+        return result;
     }
 
     private void sendNotification(TransactionDTO transaction, TransactionResult result) {

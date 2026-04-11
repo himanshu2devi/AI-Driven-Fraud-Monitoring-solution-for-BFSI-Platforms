@@ -1,4 +1,4 @@
-package com.wipro.fraud.aiassistant;
+package com.wipro.fraud.aiassistant.repository;
 
 import com.wipro.fraud.aiassistant.entity.ConversationMemory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +12,9 @@ public interface ConversationMemoryRepository
 
     List<ConversationMemory> findTop10BySessionIdOrderByCreatedAtAsc(String sessionId);
 
+    List<ConversationMemory> findTop10BySessionIdAndUserIdOrderByCreatedAtAsc(String sessionId, String userId);
+    List<ConversationMemory> findTop5ByUserIdAndRoleOrderByCreatedAtDesc(
+            String userId,
+            String role
+    );
 }

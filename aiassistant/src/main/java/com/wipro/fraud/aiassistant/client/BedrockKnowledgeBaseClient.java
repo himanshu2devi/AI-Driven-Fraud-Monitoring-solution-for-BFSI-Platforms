@@ -44,4 +44,7 @@ public class BedrockKnowledgeBaseClient {
 
         return response.output().text();
     }
+
+
+
 }
