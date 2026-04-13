@@ -70,8 +70,8 @@ function Sidebar({ onBlockedClick,onFraudSummaryClick }) {
         </li>
       </ul>
 
-      {/* 🔥 RECENT QUERIES */}
-      <h4 style={{ marginTop: "20px" }}>🕓 Last 5 Queries</h4>
+      {/*  RECENT QUERIES */}
+      <h4 style={{ marginTop: "20px" }}>🕓 Last 5 Queries of user : {userId}</h4>
 
       <ul>
         {recentQueries.length === 0 && (

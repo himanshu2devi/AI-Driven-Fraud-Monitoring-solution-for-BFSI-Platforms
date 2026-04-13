@@ -2,6 +2,17 @@ import { useState } from "react";
 import Message from "./Message";
 import '../index.css';
 import '../App.css';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell
+} from "recharts";
 
 function ChatWindow({ userId, activeView, blockedAccounts, fraudSummary,setActiveView }) {
 
@@ -10,13 +21,41 @@ function ChatWindow({ userId, activeView, blockedAccounts, fraudSummary,setActiv
   const [input, setInput] = useState("");
 
 
-  if (activeView === "summary" && fraudSummary) {
+
+// BAR CHART → SUCCESS vs FAILED
+const transactionData = fraudSummary
+  ? [
+      { name: "SUCCESSFUL", value: fraudSummary.successCount || 0 },
+      { name: "FAILED", value: fraudSummary.failedCount || 0 }
+    ]
+  : [];
+
+// PIE CHART → VALID / ALERT / FRAUD
+const fraudData = fraudSummary?.statusDistribution
+  ? [
+      { name: "VALID", value: fraudSummary.statusDistribution.VALID || 0 },
+      { name: "ALERT", value: fraudSummary.statusDistribution.ALERT || 0 },
+      { name: "FRAUD", value: fraudSummary.statusDistribution.FRAUD || 0 }
+    ]
+  : [];
+
+  const COLORS = ["#4caf50", "#ff9800", "#f44336"];
+
+  if (activeView === "summary" && !fraudSummary) {
+    return <div>Loading fraud summary...</div>;
+  }
+
+
+  if (activeView === "summary" && fraudSummary && fraudSummary.statusDistribution) {
       return (
         <div className="chat-window">
 
           <h2>📊 Fraud Summary</h2>
 
-          <button onClick={() => setActiveView("chat")}>⬅ Back</button>
+
+         <button className="back-btn" onClick={() => setActiveView("chat")}>
+           ⬅ Back to chat window
+         </button>
 
           {/* KPI */}
          <div style={{ display: "flex", gap: "20px", margin: "20px 0" }}>
@@ -43,13 +82,58 @@ function ChatWindow({ userId, activeView, blockedAccounts, fraudSummary,setActiv
 
          </div>
 
-          {/* Distribution */}
-          <h3>Status Distribution</h3>
-          <ul>
-            <li>VALID: {fraudSummary.statusDistribution.VALID}</li>
-            <li>ALERT: {fraudSummary.statusDistribution.ALERT}</li>
-            <li>FRAUD: {fraudSummary.statusDistribution.FRAUD}</li>
-          </ul>
+        <div className="chart-container">
+
+          {/* BAR CHART */}
+          <div className="chart-box">
+            <h3>Transaction Status</h3>
+
+            <BarChart width={400} height={250} data={transactionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value">
+                {transactionData.map((entry, index) => (
+                  <Cell
+                    key={index}
+                    fill={entry.name === "SUCCESSFUL" ? "#4caf50" : "#f44336"}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </div>
+
+          {/* PIE CHART */}
+          <div className="chart-box">
+            <h3>Fraud Distribution</h3>
+
+            <PieChart width={300} height={300}>
+              <Pie
+                data={fraudData}
+                dataKey="value"
+                nameKey="name"
+                outerRadius={100}
+                label
+              >
+                {fraudData.map((entry, index) => (
+                  <Cell
+                    key={index}
+                    fill={
+                      entry.name === "VALID"
+                        ? "#4caf50"
+                        : entry.name === "ALERT"
+                        ? "#ff9800"
+                        : "#f44336"
+                    }
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </div>
+
+        </div>
 
           {/* Recent Frauds */}
           <h3>Recent Fraud Transactions</h3>
@@ -130,11 +214,12 @@ function ChatWindow({ userId, activeView, blockedAccounts, fraudSummary,setActiv
 
       const data = await response.json();
 
-      const botMessage = {
-        text: data.answer,
-        sender: "bot",
-        source: data.source
-      };
+     const botMessage = {
+       text: data.answer,
+       sender: "bot",
+       source: data.source,
+       suggestions: data.suggestions || []
+     };
 
       setMessages(prev => [...prev, botMessage]);
 
@@ -165,7 +250,9 @@ function ChatWindow({ userId, activeView, blockedAccounts, fraudSummary,setActiv
 
           <div className="blocked-header">
             <h2>🚫 Blocked Accounts</h2>
-            <button onClick={() => setActiveView("chat")}>⬅ Back</button>
+           <button className="back-btn" onClick={() => setActiveView("chat")}>
+                      ⬅ Back to chat window
+                    </button>
           </div>
 
           <table className="data-table">
@@ -212,7 +299,33 @@ function ChatWindow({ userId, activeView, blockedAccounts, fraudSummary,setActiv
       {/* Messages */}
       <div className="messages">
         {messages.map((msg, index) => (
-          <Message key={index} message={msg} />
+          <div key={index}>
+
+            {/* Message */}
+            <Message message={msg} />
+
+            {/* Suggestions (ONLY for bot messages) */}
+            {msg.sender === "bot" && msg.suggestions && (
+              <div className="suggestions">
+                {msg.suggestions.map((s, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setInput(s)}
+                    style={{
+                      margin: "5px",
+                      padding: "6px 10px",
+                      borderRadius: "15px",
+                      border: "1px solid #ccc",
+                      cursor: "pointer"
+                    }}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+          </div>
         ))}
       </div>
 

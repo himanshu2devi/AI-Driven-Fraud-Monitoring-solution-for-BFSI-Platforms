@@ -3,6 +3,7 @@ package com.fraud_detection.Fraud_Management.Service;
 import com.fraud_detection.Fraud_Management.DTO.FraudSummaryDTO;
 import com.fraud_detection.Fraud_Management.entity.TransactionLog;
 import com.fraud_detection.Fraud_Management.repository.TransactionLogRepository;
+import com.fraud_detection.Fraud_Management.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,9 @@ public class FraudSummaryService {
     @Autowired
     private TransactionLogRepository transactionLogRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
+
 
     public FraudSummaryDTO getFraudSummary() {
 
@@ -32,6 +36,12 @@ public class FraudSummaryService {
         long fraud = transactionLogRepository.countByStatus("FRAUD");
         long alert = transactionLogRepository.countByStatus("ALERT");
         long valid = transactionLogRepository.countByStatus("VALID");
+
+        long success = transactionRepository.countByStatus("SUCCESSFUL");
+        long failed = transactionRepository.countByStatus("FAILED");
+
+        dto.setSuccessCount(success);
+        dto.setFailedCount(failed);
 
         dto.setTotalTransactions(total);
         dto.setFraudCount(fraud);

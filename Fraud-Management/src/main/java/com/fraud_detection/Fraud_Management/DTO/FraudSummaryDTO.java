@@ -10,9 +10,28 @@ public class FraudSummaryDTO {
     private long alertCount;
     private double fraudRate;
 
+    private long successCount;
+    private long failedCount;
+
     private Map<String, Long> statusDistribution;
     private List<Map<String, Object>> recentFrauds;
     private List<Map<String, Object>> topPatterns;
+
+    public long getSuccessCount() {
+        return successCount;
+    }
+
+    public void setSuccessCount(long successCount) {
+        this.successCount = successCount;
+    }
+
+    public long getFailedCount() {
+        return failedCount;
+    }
+
+    public void setFailedCount(long failedCount) {
+        this.failedCount = failedCount;
+    }
 
     // getters & setters
 
