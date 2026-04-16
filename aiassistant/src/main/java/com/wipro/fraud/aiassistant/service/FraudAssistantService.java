@@ -10,5 +10,7 @@ public interface FraudAssistantService {
     AssistantResponse processQuery(AssistantRequest request);
     List<Map<String, Object>> getAllUsers();
 
+    AssistantResponse processAnalysis(AssistantRequest request);
+
 
 }

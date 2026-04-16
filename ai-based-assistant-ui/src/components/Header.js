@@ -1,5 +1,7 @@
 function Header() {
 
+  const userId = localStorage.getItem("userId");
+
   const logout = () => {
     localStorage.removeItem("userId");
     window.location.reload();
@@ -7,11 +9,23 @@ function Header() {
 
   return (
     <div className="header">
-      🤖 AI Based Fraud Monitoring Assistant
 
-      <button onClick={logout} style={{ float: "right" }}>
-        Logout
-      </button>
+      {/* LEFT TITLE */}
+      <div className="header-left">
+        🤖 AI Based Fraud Monitoring Assistant
+      </div>
+
+      {/* RIGHT SIDE (USER + LOGOUT) */}
+      <div className="header-right">
+        <span className="username">
+          👤 {userId ? ` ${userId}` : "User"}
+        </span>
+
+        <button onClick={logout} className="logout-btn">
+          Logout
+        </button>
+      </div>
+
     </div>
   );
 }

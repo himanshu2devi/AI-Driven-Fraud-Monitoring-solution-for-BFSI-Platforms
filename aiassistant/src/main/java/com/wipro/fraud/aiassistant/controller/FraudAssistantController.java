@@ -24,6 +24,11 @@ public class FraudAssistantController {
 
     }
 
+    @PostMapping("/analyze")
+    public AssistantResponse analyze(@RequestBody AssistantRequest request) {
+        return fraudAssistantService.processAnalysis(request);
+    }
+
     @GetMapping("/recent")
     public List<String> getRecentQueries(
             @RequestParam String userId) {

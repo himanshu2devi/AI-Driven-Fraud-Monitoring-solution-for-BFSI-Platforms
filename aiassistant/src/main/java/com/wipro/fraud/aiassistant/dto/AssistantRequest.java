@@ -17,4 +17,14 @@ public class AssistantRequest {
     // user question
     private String question;
 
+    private boolean agentMode;
+
+    public boolean isAgentMode() {
+        return agentMode;
+    }
+
+    public void setAgentMode(boolean agentMode) {
+        this.agentMode = agentMode;
+    }
+
 }
