@@ -1,3 +1,5 @@
+import ReactMarkdown from "react-markdown";
+
 function Message({ message }) {
 
 
@@ -410,7 +412,13 @@ if (message.type === "ERROR") {
   return (
     <div className={wrapperClass}>
       <div className={bubbleClass}>
-        {message.text}
+       <ReactMarkdown
+         components={{
+           p: ({children}) => <span>{children}</span>
+         }}
+       >
+         {message.text}
+       </ReactMarkdown>
         {message.source && (
           <span className="source">Source: {message.source}</span>
         )}

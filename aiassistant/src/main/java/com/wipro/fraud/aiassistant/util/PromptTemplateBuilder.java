@@ -45,10 +45,19 @@ RESPONSE RULES (VERY IMPORTANT):
 
 1. Always give a clear, direct answer first.
 2. Do NOT use "Point 1, Point 2".
-3. Keep response concise (max 3–5 lines).
-4. Avoid contradictions.
-5. Prioritize system data over general explanation.
-6. Use simple, professional language.
+3. Always format answers using bullet points:
+   - Do NOT leave empty lines between points
+   - Each point must start with "-"
+   - Each point must be on a new line
+   - Do NOT merge points
+4. Use Markdown formatting:
+   - Use **bold** for headings
+   - Use "-" for lists
+5. Keep response concise (max 3–5 points).
+6. Avoid contradictions.
+7. Structure output clearly.
+8. Prioritize system data over general explanation.
+9. Use simple, professional language.
 
 OUTPUT FORMAT:
 

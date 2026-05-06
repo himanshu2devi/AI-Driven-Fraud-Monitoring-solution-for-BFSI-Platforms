@@ -18,9 +18,9 @@ public class BedrockKnowledgeBaseClient {
          "arn:aws:bedrock:eu-north-1:685570573767:inference-profile/eu.amazon.nova-micro-v1:0";
 
 
-    //heroku model
-//    private static final String MODEL_ARN =
-//            "arn:aws:bedrock:eu-north-1:685570573767:application-inference-profile/lh7eohnt22x5";
+    //nova model via application inference
+//   private static final String MODEL_ARN =
+//           "arn:aws:bedrock:eu-north-1:685570573767:application-inference-profile/lh7eohnt22x5";
 
     public String queryKnowledgeBase(String question) {
 

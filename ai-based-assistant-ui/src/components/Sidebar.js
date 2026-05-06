@@ -87,7 +87,7 @@ function Sidebar({ onBlockedClick,onFraudSummaryClick }) {
 
        <div className="sidebar-footer">
           <p>This application is developed by Himanshu</p>
-          <br></br>
+
           <p>© All rights reserved by Wipro Limited</p>
         </div>
 
