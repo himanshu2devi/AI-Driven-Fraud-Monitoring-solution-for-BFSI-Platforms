@@ -91,7 +91,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
 # ===============================
-# STEP 7: 🔥 LIGHTGBM MODEL
+# STEP 7:  LIGHTGBM MODEL
 # ===============================
 model = LGBMClassifier(
     n_estimators=120,
@@ -102,7 +102,7 @@ model = LGBMClassifier(
 model.fit(X_train_scaled, y_train)
 
 # ===============================
-# STEP 7B: 🔥 ANOMALY MODEL
+# STEP 7B:  ANOMALY MODEL
 # ===============================
 anomaly_model = IsolationForest(
     n_estimators=100,

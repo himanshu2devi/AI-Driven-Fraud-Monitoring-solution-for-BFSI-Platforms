@@ -22,14 +22,19 @@ public class FraudScoringService {
     @Autowired
     private GraphRiskService graphRiskService;
 
-    public void enrichWithAiScore(ResultHolder holder, TransactionDTO tx) {
+    public void enrichWithAiScore(
+            ResultHolder holder,
+            TransactionDTO tx
+    ) {
 
-        double ruleScore = holder.getRuleScore();
+        double ruleScore =
+                holder.getRuleScore();
 
         // =========================================
         // 🔹 FEATURE EXTRACTION
         // =========================================
-        List<Double> features = extractor.extract(tx);
+        List<Double> features =
+                extractor.extract(tx);
 
         // =========================================
         // 🔹 CALL PYTHON AI SERVICE
@@ -37,10 +42,15 @@ public class FraudScoringService {
         Map<String, Object> response =
                 aiClient.getFraudScore(features);
 
-        if (response == null || response.get("fraud_score") == null) {
+        if (
+                response == null
+                        ||
+                        response.get("fraud_score") == null
+        ) {
 
             throw new RuntimeException(
-                    "Invalid AI response: " + response
+                    "Invalid AI response: "
+                            + response
             );
         }
 
@@ -49,43 +59,66 @@ public class FraudScoringService {
         // =========================================
         double aiScore =
                 Double.parseDouble(
-                        response.get("fraud_score").toString()
+                        response.get("fraud_score")
+                                .toString()
                 );
 
         double mlScore =
                 Double.parseDouble(
-                        response.get("ml_score").toString()
+                        response.get("ml_score")
+                                .toString()
                 );
 
         double anomalyScore =
                 Double.parseDouble(
-                        response.get("anomaly_score").toString()
+                        response.get("anomaly_score")
+                                .toString()
                 );
 
         // =========================================
         // 🔹 GRAPH RISK SCORE
         // =========================================
         double graphRisk =
-                graphRiskService.calculateGraphRisk(
-                        tx.getAccNoFrom()
-                );
+                graphRiskService
+                        .calculateGraphRisk(
+                                tx.getAccNoFrom()
+                        );
 
         // =========================================
         // 🔹 DEBUG LOGS
         // =========================================
-        System.out.println("\n========== FRAUD ANALYSIS ==========");
+        System.out.println(
+                "\n========== FRAUD ANALYSIS =========="
+        );
 
-        System.out.println("Features: " + features);
+        System.out.println(
+                "Features: " + features
+        );
 
-        System.out.println("ML Score: " + mlScore);
+        System.out.printf(
+                "ML Score: %.4f%n",
+                mlScore
+        );
 
-        System.out.println("Anomaly Score: " + anomalyScore);
+        System.out.printf(
+                "Anomaly Score: %.4f%n",
+                anomalyScore
+        );
 
-        System.out.println("AI Score: " + aiScore);
+        System.out.printf(
+                "AI Score: %.4f%n",
+                aiScore
+        );
 
-        System.out.println("Rule Score: " + ruleScore);
+        System.out.printf(
+                "Rule Score: %.4f%n",
+                ruleScore
+        );
 
-        System.out.println("Graph Risk Score: " + graphRisk);
+        System.out.printf(
+                "Graph Risk Score: %.4f%n",
+                graphRisk
+        );
 
         StringBuilder finalReason =
                 new StringBuilder();
@@ -93,16 +126,29 @@ public class FraudScoringService {
         // =========================================
         // 🔹 EXISTING RULE REASONS
         // =========================================
-        if (holder.getReason() != null
-                && !holder.getReason().isEmpty()) {
+        if (
+                holder.getReason() != null
+                        &&
+                        !holder.getReason().isEmpty()
+        ) {
 
-            finalReason.append(holder.getReason());
+            finalReason.append(
+                    holder.getReason()
+            );
 
-            if (!holder.getReason().endsWith(";")) {
+            if (
+                    !holder.getReason()
+                            .endsWith(";")
+            ) {
 
                 finalReason.append("; ");
             }
         }
+
+        String existingReason =
+                holder.getReason() != null
+                        ? holder.getReason()
+                        : "";
 
         // =========================================
         // 🔹 AI EXPLAINABILITY
@@ -132,9 +178,90 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 CRITICAL OVERRIDE
+        // 🔹 CRITICAL RULE OVERRIDES
+        // =========================================
+
+        // Blacklisted account
+        if (
+                existingReason.contains(
+                        "Blacklisted account"
+                )
+        ) {
+
+            holder.setAiScore(1.0);
+
+            holder.setFinalScore(1.0);
+
+            holder.setRiskLevel("HIGH");
+
+            holder.setStatus(
+                    TransactionStatus.FRAUD
+            );
+
+            finalReason.append(
+                    "Critical blacklisted account transaction detected; "
+            );
+
+            holder.setReason(
+                    formatReasons(
+                            finalReason.toString()
+                    )
+            );
+
+            System.out.println(
+                    "Final Score: 1.0"
+            );
+
+            System.out.println(
+                    "====================================\n"
+            );
+
+            return;
+        }
+
+        // Extreme transaction amount
+        if (
+                tx.getAmount() != null
+                        &&
+                        tx.getAmount() >= 1000000
+        ) {
+
+            holder.setAiScore(1.0);
+
+            holder.setFinalScore(1.0);
+
+            holder.setRiskLevel("HIGH");
+
+            holder.setStatus(
+                    TransactionStatus.FRAUD
+            );
+
+            finalReason.append(
+                    "Extremely high-value transaction detected; "
+            );
+
+            holder.setReason(
+                    formatReasons(
+                            finalReason.toString()
+                    )
+            );
+
+            System.out.println(
+                    "Final Score: 1.0"
+            );
+
+            System.out.println(
+                    "====================================\n"
+            );
+
+            return;
+        }
+
+        // =========================================
+        // 🔹 CRITICAL AI OVERRIDE
         // =========================================
         if (
+
                 aiScore >= 0.9
 
                         ||
@@ -152,17 +279,23 @@ public class FraudScoringService {
 
             holder.setRiskLevel("HIGH");
 
-            holder.setStatus(TransactionStatus.FRAUD);
+            holder.setStatus(
+                    TransactionStatus.FRAUD
+            );
 
             finalReason.append(
                     "Critical fraud confidence from hybrid AI engine; "
             );
 
             holder.setReason(
-                    formatReasons(finalReason.toString())
+                    formatReasons(
+                            finalReason.toString()
+                    )
             );
 
-            System.out.println("Final Score: 1.0");
+            System.out.println(
+                    "Final Score: 1.0"
+            );
 
             System.out.println(
                     "====================================\n"
@@ -184,33 +317,50 @@ public class FraudScoringService {
 
                         + (0.10 * anomalyScore);
 
+        // =========================================
+        // 🔹 ML SUSPICIOUS OVERRIDE
+        // =========================================
+        if (
+                mlScore > 0.7
+                        &&
+                        finalScore < 0.4
+        ) {
+
+            finalScore = 0.45;
+        }
+
         holder.setAiScore(aiScore);
 
         holder.setFinalScore(finalScore);
 
-        System.out.println(
-                "Final Hybrid Score: " + finalScore
+        System.out.printf(
+                "Final Hybrid Score: %.4f%n",
+                finalScore
         );
 
         // =========================================
         // 🔹 FINAL DECISION
         // =========================================
-        if (finalScore >= 0.8) {
+        if (finalScore >= 0.70) {
 
             holder.setRiskLevel("HIGH");
 
-            holder.setStatus(TransactionStatus.FRAUD);
+            holder.setStatus(
+                    TransactionStatus.FRAUD
+            );
 
             finalReason.append(
                     "High combined fraud score; "
             );
         }
 
-        else if (finalScore >= 0.5) {
+        else if (finalScore >= 0.30) {
 
             holder.setRiskLevel("MEDIUM");
 
-            holder.setStatus(TransactionStatus.ALERT);
+            holder.setStatus(
+                    TransactionStatus.ALERT
+            );
 
             finalReason.append(
                     "Moderate fraud risk; "
@@ -221,7 +371,9 @@ public class FraudScoringService {
 
             holder.setRiskLevel("LOW");
 
-            holder.setStatus(TransactionStatus.VALID);
+            holder.setStatus(
+                    TransactionStatus.VALID
+            );
 
             finalReason.append(
                     "Low fraud risk; "
@@ -234,7 +386,9 @@ public class FraudScoringService {
         String reasonText =
                 finalReason.toString();
 
-        if (reasonText.trim().isEmpty()) {
+        if (
+                reasonText.trim().isEmpty()
+        ) {
 
             reasonText =
                     "AI-based fraud detection triggered";
@@ -256,8 +410,11 @@ public class FraudScoringService {
             String reasonText
     ) {
 
-        if (reasonText == null
-                || reasonText.isEmpty()) {
+        if (
+                reasonText == null
+                        ||
+                        reasonText.isEmpty()
+        ) {
 
             return "No significant risk detected";
         }
