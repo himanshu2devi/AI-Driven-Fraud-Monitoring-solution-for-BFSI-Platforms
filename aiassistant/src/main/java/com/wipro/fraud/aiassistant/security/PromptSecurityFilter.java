@@ -12,12 +12,30 @@ public class PromptSecurityFilter {
 
         String q = input.toLowerCase();
 
+
+        // ALLOW EDUCATIONAL AML / FRAUD POLICY QUERIES
+        if (q.contains("anti-money laundering")
+                || q.contains("aml")
+                || q.contains("fraud monitoring")
+                || q.contains("fraud rules")
+                || q.contains("suspicious patterns")
+                || q.contains("kyc")
+                || q.contains("rbi guidelines")) {
+
+            return new SecurityResult(
+                    false,
+                    null,
+                    SecurityLevel.ALLOW
+            );
+        }
+
         //  HIGH RISK (block immediately)
-        if (q.contains("bypass")
-                || q.contains("hack")
-                || q.contains("launder")
-                || q.contains("evade")
-                || q.contains("exploit")) {
+        if (q.contains("bypass fraud")
+                || q.contains("hack bank")
+                || q.contains("hack transaction")
+                || q.contains("money laundering techniques")
+                || q.contains("evade detection")
+                || q.contains("exploit vulnerability")) {
 
             return new SecurityResult(true,
                     "⚠️ This request violates security policies.",

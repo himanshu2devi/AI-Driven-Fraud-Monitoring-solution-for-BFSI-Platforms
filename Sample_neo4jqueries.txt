@@ -5,7 +5,7 @@
 Open:
 http://localhost:7474
 
-
+1)
 MATCH (a)-[r:TRANSFERRED]->(b)
 WHERE r.status = 'FRAUD'
 RETURN a,r,b
@@ -14,10 +14,9 @@ RETURN a,r,b
 
 Now ONLY fraud relationships appear.
 
-This becomes your:
-Fraud Network View
 
-SHOW HIGH-RISK ACCOUNTS
+
+2)SHOW HIGH-RISK ACCOUNTS
 
 Run:
 MATCH (a:Account)-[r:TRANSFERRED]->()
@@ -30,7 +29,7 @@ COUNT(r) AS FraudCount
 ORDER BY FraudCount DESC
 
 
-THIS is exactly your graph risk source.
+3)THIS is exactly your graph risk source.
 
 
 MATCH (a:Account)-[r:TRANSFERRED]->()
@@ -57,9 +56,9 @@ calculates account risk level based
 on historical fraud relationships.
 
 
- STEP 5 — SHOW FRAUD CLUSTERS
+ 4) — SHOW FRAUD CLUSTERS
 
-run
+
 
 MATCH (a)-[r:TRANSFERRED]->(b)
 
@@ -74,7 +73,7 @@ You’ll visually see:
 * suspicious hubs
 * fraud clusters
 
-
+5)
 below query proves ne04j contributes to final risk score:
 
 MATCH (a:Account)-[r:TRANSFERRED]->()
@@ -88,7 +87,7 @@ COUNT(r) AS FraudCount
 ORDER BY FraudCount DESC
 
 
-latest 1 txn data:
+6)latest 1 txn data:
 MATCH (a:Account)-[r:TRANSFERRED]->(b)
 
 WITH
@@ -135,7 +134,7 @@ END AS GraphRiskScore
 
 
 
-latest 10 risky accounts:
+7)latest 10 risky accounts:
 MATCH (a:Account)-[r:TRANSFERRED]->()
 
 WHERE r.status = 'FRAUD'
@@ -161,4 +160,4 @@ ELSE 'MINIMAL'
 END AS RiskLevel
 
 ORDER BY latestTxn DESC
-LIMIT 10
+LIMIT 5

@@ -41,7 +41,7 @@
 	16.	Analyze recent failed transactions
 	17.	Why fraud transactions are increasing?
 	18.	
-	19.	Analyze high value transactions and risks
+	
 	20.	Why multiple transactions fail in short time?
 	21.	Explain risk indicators in recent transactions.(blocked)
 
@@ -59,6 +59,9 @@
 
 	27.	What is fraud in digital banking? 
 	28.	What is the difference between fraud and suspicious transaction?
+explainAnti-Money Laundering as per policy
+explain Fraud Monitoring Rules for Digital Payment System
+
 	29.	What is AML and why is it important? 
 	30.	What are common fraud detection rules?
 	31.	Explain KYC in banking

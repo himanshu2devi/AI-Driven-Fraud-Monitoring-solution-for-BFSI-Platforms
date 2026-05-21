@@ -77,11 +77,41 @@ public class FraudSummaryService {
         dto.setRecentFrauds(recentFrauds);
 
         // top patterns (group by reason)
+//        Map<String, Long> patternMap = transactionLogRepository.findAll().stream()
+//                .filter(log -> log.getReason() != null && !log.getReason().isEmpty())
+//                .filter(log -> "FRAUD".equals(log.getStatus()) || "ALERT".equals(log.getStatus()))
+//                .collect(Collectors.groupingBy(
+//                        TransactionLog::getReason,
+//                        Collectors.counting()
+//                ));
+
         Map<String, Long> patternMap = transactionLogRepository.findAll().stream()
+
                 .filter(log -> log.getReason() != null && !log.getReason().isEmpty())
-                .filter(log -> "FRAUD".equals(log.getStatus()) || "ALERT".equals(log.getStatus()))
+
+                .filter(log ->
+                        "FRAUD".equals(log.getStatus())
+                                ||
+                                "ALERT".equals(log.getStatus())
+                )
+
+                .flatMap(log -> {
+
+                    String cleaned =
+                            log.getReason()
+                                    .replace("\n- ", "")
+                                    .replace("- ", "");
+
+                    return List.of(cleaned.split(";|\\n"))
+                            .stream();
+                })
+
+                .map(String::trim)
+
+                .filter(s -> !s.isEmpty())
+
                 .collect(Collectors.groupingBy(
-                        TransactionLog::getReason,
+                        s -> s,
                         Collectors.counting()
                 ));
 

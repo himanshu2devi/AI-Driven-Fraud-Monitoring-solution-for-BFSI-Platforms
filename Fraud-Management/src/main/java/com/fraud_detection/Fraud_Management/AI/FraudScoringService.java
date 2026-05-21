@@ -223,7 +223,7 @@ public class FraudScoringService {
         if (
                 tx.getAmount() != null
                         &&
-                        tx.getAmount() >= 1000000
+                        tx.getAmount() >= 10000000
         ) {
 
             holder.setAiScore(1.0);
