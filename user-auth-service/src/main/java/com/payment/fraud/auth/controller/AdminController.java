@@ -49,7 +49,7 @@ public class AdminController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // 🔍 DEBUG LOGS
+        //  DEBUG LOGS
         System.out.println("Authentication Object: " + authentication);
         System.out.println("Is Authenticated: " + (authentication != null && authentication.isAuthenticated()));
         System.out.println("Principal: " + (authentication != null ? authentication.getPrincipal() : "null"));
@@ -58,12 +58,12 @@ public class AdminController {
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getPrincipal().equals("anonymousUser")) {
 
-            System.out.println("❌ User not authenticated - request rejected");
+            System.out.println(" User not authenticated - request rejected");
             throw new RuntimeException("User not authenticated");
         }
 
         String currentUsername = authentication.getName();
-        System.out.println("✅ Authenticated user: " + currentUsername);
+        System.out.println(" Authenticated user: " + currentUsername);
 
         User currentUser = userService.findByUsername(currentUsername);
 
@@ -73,13 +73,13 @@ public class AdminController {
         System.out.println("Is Admin: " + isAdmin);
 
         if (!isAdmin) {
-            System.out.println("❌ Access denied - user is not admin");
+            System.out.println(" Access denied - user is not admin");
             throw new RuntimeException("Access Denied: Only Admins can assign permissions");
         }
 
         userService.assignPermission(userId, permission);
 
-        System.out.println("✅ Permission assigned successfully");
+        System.out.println(" Permission assigned successfully");
 
         return ResponseEntity.ok("Permission assigned successfully");
     }

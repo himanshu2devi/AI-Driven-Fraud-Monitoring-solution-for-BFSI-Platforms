@@ -22,13 +22,13 @@ public class FraudFeatureExtractor {
         double amount = tx.getAmount();
 
         // =========================================
-        // 1️⃣ INTERNATIONAL TRANSACTION
+        // 1️ INTERNATIONAL TRANSACTION
         // =========================================
         double isInternational =
                 "INR".equalsIgnoreCase(tx.getCurrency()) ? 0.0 : 1.0;
 
         // =========================================
-        // 2️⃣ NIGHT TRANSACTION
+        // 2️ NIGHT TRANSACTION
         // =========================================
         int hour = tx.getTimestamp().getHour();
 
@@ -36,7 +36,7 @@ public class FraudFeatureExtractor {
                 (hour >= 0 && hour < 5) ? 1.0 : 0.0;
 
         // =========================================
-        // 3️⃣ WEEKEND TRANSACTION
+        // 3️ WEEKEND TRANSACTION
         // =========================================
         DayOfWeek day = tx.getTimestamp().getDayOfWeek();
 
@@ -46,22 +46,22 @@ public class FraudFeatureExtractor {
                         ? 1.0 : 0.0;
 
         // =========================================
-        // 4️⃣ TRANSACTION VELOCITY
+        // 4️ TRANSACTION VELOCITY
         // =========================================
         double velocity5min = calculateVelocity(tx);
 
         // =========================================
-        // 5️⃣ NEW MERCHANT / NEW BENEFICIARY
+        // 5️ NEW MERCHANT / NEW BENEFICIARY
         // =========================================
         double isNewMerchant = calculateNewBeneficiary(tx);
 
         // =========================================
-        // 6️⃣ ACCOUNT AGE (REALISTIC HEURISTIC)
+        // 6️ ACCOUNT AGE (REALISTIC HEURISTIC)
         // =========================================
         double accountAgeDays = estimateAccountAge(tx);
 
         // =========================================
-        // 7️⃣ FAILED LOGIN ATTEMPTS
+        // 7️ FAILED LOGIN ATTEMPTS
         // =========================================
         double failedLoginAttempts = estimateLoginRisk(tx);
 

@@ -59,7 +59,7 @@ public class FraudInvestigationAgent {
                 String analysis = runStep("🧠 AI Failure Analysis",
                         "why transactions are failing for account " + accountNumber);
 
-// 🔥 DYNAMIC RISK
+//  DYNAMIC RISK
                 if (analysis != null) {
 
                     String lower = analysis.toLowerCase();
@@ -141,7 +141,7 @@ public class FraudInvestigationAgent {
     }
 
     // ===============================
-    // 🔥 DECISION ENGINE (CORE LOGIC)
+    //  DECISION ENGINE (CORE LOGIC)
     // ===============================
     private String decideNextStep(List<Map<String, Object>> data) {
 
@@ -158,7 +158,7 @@ public class FraudInvestigationAgent {
                 "FAILED".equalsIgnoreCase(String.valueOf(t.get("status")))
         );
 
-        // 🔥 PRIORITY ORDER
+        //  PRIORITY ORDER
         if (hasFraudOrAlert) return "check fraud";
         if (hasFailed) return "check failed";
 

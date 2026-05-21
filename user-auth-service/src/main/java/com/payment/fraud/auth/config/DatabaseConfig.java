@@ -32,7 +32,7 @@ public class DatabaseConfig {
         dataSource.setMaximumPoolSize(10); // Optional: tune as needed
         dataSource.setMinimumIdle(2);      // Optional
 
-        logger.info("✅ DataSource bean created successfully.");
+        logger.info(" DataSource bean created successfully.");
 
 
         return dataSource;

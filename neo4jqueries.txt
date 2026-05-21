@@ -1,0 +1,164 @@
+⸻
+
+
+
+Open:
+http://localhost:7474
+
+
+MATCH (a)-[r:TRANSFERRED]->(b)
+WHERE r.status = 'FRAUD'
+RETURN a,r,b
+
+
+
+Now ONLY fraud relationships appear.
+
+This becomes your:
+Fraud Network View
+
+SHOW HIGH-RISK ACCOUNTS
+
+Run:
+MATCH (a:Account)-[r:TRANSFERRED]->()
+WHERE r.status = 'FRAUD'
+
+RETURN
+a.accountNumber AS Account,
+COUNT(r) AS FraudCount
+
+ORDER BY FraudCount DESC
+
+
+THIS is exactly your graph risk source.
+
+
+MATCH (a:Account)-[r:TRANSFERRED]->()
+
+WHERE r.status = 'FRAUD'
+
+WITH a, COUNT(r) AS fraudCount
+
+RETURN
+a.accountNumber AS Account,
+
+fraudCount,
+
+CASE
+WHEN fraudCount >= 5 THEN 'HIGH'
+WHEN fraudCount >= 3 THEN 'MEDIUM'
+ELSE 'LOW'
+END AS RiskLevel
+
+ORDER BY fraudCount DESC
+
+:Neo4j graph intelligence dynamically
+calculates account risk level based
+on historical fraud relationships.
+
+
+ STEP 5 — SHOW FRAUD CLUSTERS
+
+run
+
+MATCH (a)-[r:TRANSFERRED]->(b)
+
+WHERE r.status = 'FRAUD'
+
+RETURN a,r,b
+LIMIT 50
+
+You’ll visually see:
+
+* repeated accounts
+* suspicious hubs
+* fraud clusters
+
+
+below query proves ne04j contributes to final risk score:
+
+MATCH (a:Account)-[r:TRANSFERRED]->()
+
+WHERE r.status = 'FRAUD'
+
+RETURN
+a.accountNumber,
+COUNT(r) AS FraudCount
+
+ORDER BY FraudCount DESC
+
+
+latest 1 txn data:
+MATCH (a:Account)-[r:TRANSFERRED]->(b)
+
+WITH
+a,
+b,
+r
+
+ORDER BY r.timestamp DESC
+
+LIMIT 1
+
+MATCH (a)-[fr:TRANSFERRED]->()
+
+WHERE fr.status = 'FRAUD'
+
+WITH
+a,
+b,
+r,
+COUNT(fr) AS fraudCount
+
+RETURN
+
+a.accountNumber AS FromAccount,
+
+b.accountNumber AS ToAccount,
+
+r.amount AS Amount,
+
+r.status AS Status,
+
+r.reason AS Reason,
+
+r.timestamp AS Timestamp,
+
+fraudCount,
+
+CASE
+WHEN fraudCount >= 10 THEN 0.9
+WHEN fraudCount >= 5 THEN 0.6
+WHEN fraudCount >= 2 THEN 0.3
+ELSE 0.0
+END AS GraphRiskScore
+
+
+
+latest 10 risky accounts:
+MATCH (a:Account)-[r:TRANSFERRED]->()
+
+WHERE r.status = 'FRAUD'
+
+WITH
+a,
+COUNT(r) AS fraudCount,
+MAX(r.timestamp) AS latestTxn
+
+RETURN
+
+a.accountNumber AS Account,
+
+fraudCount,
+
+latestTxn,
+
+CASE
+WHEN fraudCount >= 10 THEN 'HIGH'
+WHEN fraudCount >= 5 THEN 'MEDIUM'
+WHEN fraudCount >= 2 THEN 'LOW'
+ELSE 'MINIMAL'
+END AS RiskLevel
+
+ORDER BY latestTxn DESC
+LIMIT 10

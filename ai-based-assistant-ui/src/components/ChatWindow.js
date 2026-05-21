@@ -54,7 +54,7 @@ const sendMessage = async () => {
   const userInput = input;
   setInput("");
 
-  // ✅ Show user message
+  //  Show user message
   setMessages(prev => [
     ...prev,
     { sender: "user", text: userInput }
@@ -64,7 +64,7 @@ const sendMessage = async () => {
   try {
 
     // ===============================
-    // 🔹 STEP 1: CALL MAIN API
+    //  STEP 1: CALL MAIN API
     // ===============================
     const response = await fetch("http://localhost:8090/api-gateway/aiassistant/api/v1/fraud-assistant/ask", {
       method: "POST",
@@ -78,10 +78,14 @@ const sendMessage = async () => {
       })
     });
 
-    const data = await response.json();
+   if (!response.ok) {
+     throw new Error("Service Down");
+   }
+
+   const data = await response.json();
 
     // ===============================
-    // 🔹 STEP 2: SHOW INITIAL RESPONSE
+    //  STEP 2: SHOW INITIAL RESPONSE
     // ===============================
     setMessages(prev => [
       ...prev,
@@ -97,7 +101,7 @@ const sendMessage = async () => {
     ]);
 
     // ===============================
-    // 🔥 STEP 3: IF LOADING → CALL AI API
+    //  STEP 3: IF LOADING → CALL AI API
     // ===============================
     if (data.type === "LOADING") {
 
@@ -116,10 +120,14 @@ const sendMessage = async () => {
         })
       });
 
+      if (!analysisRes.ok) {
+        throw new Error("Analysis Service Down");
+      }
+
       const analysisData = await analysisRes.json();
 
       // ===============================
-      // 🔹 STEP 4: SHOW AI RESULT
+      //  STEP 4: SHOW AI RESULT
       // ===============================
       setMessages(prev => [
         ...prev,
@@ -282,7 +290,7 @@ const sendMessage = async () => {
    );
  }
 // =========================
-// 🚫 BLOCKED VIEW (FINAL FIXED)
+//  BLOCKED VIEW (FINAL FIXED)
 // =========================
 if (activeView === "blocked") {
 
@@ -373,7 +381,7 @@ if (activeView === "blocked") {
          </div>
        ))}
 
-       {/* ✅ ADD TYPING HERE */}
+       {/*  ADD TYPING HERE */}
        {loading && (
          <div className="message-wrapper bot">
            <div className="message-bubble bot-bubble">

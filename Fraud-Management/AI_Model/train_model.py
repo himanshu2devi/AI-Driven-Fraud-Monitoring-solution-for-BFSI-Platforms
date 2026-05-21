@@ -131,8 +131,18 @@ joblib.dump(anomaly_model, "anomaly_model.pkl")
 joblib.dump(scaler, "scaler.pkl")
 
 
-print("\n✅ Model saved as fraud_model.pkl")
-print("✅ Scaler saved as scaler.pkl")
+print("\n Model saved as fraud_model.pkl")
+print(" Scaler saved as scaler.pkl")
+
+# ===============================
+
+# STEP 9B: EXPORT TRAINED DATASET
+
+# ===============================
+
+df.to_csv("fraud_training_dataset.csv", index=False)
+
+print(" Training dataset exported as fraud_training_dataset.csv")
 
 # ===============================
 # STEP 10: TEST
@@ -142,4 +152,4 @@ sample_scaled = scaler.transform(sample)
 
 prob = model.predict_proba(sample_scaled)[0][1]
 
-print("\n🚨 Sample Fraud Probability:", round(prob, 3))
+print("\n Sample Fraud Probability:", round(prob, 3))

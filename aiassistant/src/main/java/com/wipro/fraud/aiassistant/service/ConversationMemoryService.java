@@ -13,13 +13,13 @@ public class ConversationMemoryService {
 
     private final ConversationMemoryRepository repository;
 
-    // 🔹 OLD METHOD (keep it if needed)
+
     public List<ConversationMemory> getConversation(String sessionId){
         return repository
                 .findTop10BySessionIdOrderByCreatedAtAsc(sessionId);
     }
 
-    // 🔥 NEW METHOD (USER BASED)
+
     public List<ConversationMemory> getConversation(String sessionId, String userId){
         return repository
                 .findTop10BySessionIdAndUserIdOrderByCreatedAtAsc(sessionId, userId);

@@ -26,7 +26,7 @@ public class SwaggerAPIConfig {
                         .license(new License().name("Apache 2.0").url("https://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Project GitHub Repository")
-                        .url("https://github.com/Scalable-Service-Group27/Fraud-management"));
+                        .url(""));
     }
 
 }

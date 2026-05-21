@@ -27,7 +27,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("🔥 SecurityConfig initialized");
+        System.out.println(" SecurityConfig initialized");
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {})

@@ -7,7 +7,7 @@ import java.util.Set;
 @Component
 public class TableAccessManager {
 
-    // 🔥 Map intent → table
+    //  Map intent → table
     public String getTableFromIntent(String intent) {
 
         return switch (intent) {
@@ -19,7 +19,7 @@ public class TableAccessManager {
         };
     }
 
-    // 🔥 Detect table from raw question (fallback)
+    //  Detect table from raw question (fallback)
     public String detectTableFromQuery(String query) {
 
         query = query.toLowerCase();
@@ -33,7 +33,7 @@ public class TableAccessManager {
         return "unknown";
     }
 
-    // 🔥 Role → Table access
+    //  Role → Table access
     public boolean hasAccess(Set<String> roles, String table) {
 
         if (roles.contains("ROLE_ADMIN")) return true;

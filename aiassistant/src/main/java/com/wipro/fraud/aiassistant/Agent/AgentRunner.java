@@ -29,7 +29,7 @@ public class AgentRunner implements CommandLineRunner {
 
                 String input = scanner.nextLine();
 
-                // 👉 START AGENT MODE
+                //  START AGENT MODE
                 if ("agent".equalsIgnoreCase(input)) {
 
                     if (agentActive) {
@@ -44,7 +44,7 @@ public class AgentRunner implements CommandLineRunner {
 
                     startAgentLoop(scanner);
 
-                    agentActive = false; // 🔥 reset after exit
+                    agentActive = false; //  reset after exit
                 }
             }
 
@@ -61,13 +61,13 @@ public class AgentRunner implements CommandLineRunner {
 
             if ("exit".equalsIgnoreCase(input)) {
                 System.out.println("👋 Exiting Agent Mode...\n");
-                return; // 🔥 IMPORTANT
+                return;
             }
 
             try {
 
                 System.out.println("\n🧠 Thinking...\n");
-                // 🔥 HELP COMMAND
+                //  HELP COMMAND
                 if ("help".equalsIgnoreCase(input)) {
                     System.out.println("""
 Available commands:

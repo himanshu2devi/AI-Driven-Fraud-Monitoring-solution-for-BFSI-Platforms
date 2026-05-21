@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 public class PromptSecurityFilter {
 
     // =========================
-    // 🔐 INPUT CHECK
+    //  INPUT CHECK
     // =========================
     public SecurityResult checkInput(String input) {
 
         String q = input.toLowerCase();
 
-        // 🚫 HIGH RISK (block immediately)
+        //  HIGH RISK (block immediately)
         if (q.contains("bypass")
                 || q.contains("hack")
                 || q.contains("launder")
@@ -24,7 +24,7 @@ public class PromptSecurityFilter {
                     SecurityLevel.BLOCK);
         }
 
-        // ⚠️ PROMPT INJECTION
+        //  PROMPT INJECTION
         if (q.contains("ignore previous instructions")
                 || q.contains("reveal system prompt")
                 || q.contains("show database")
@@ -37,7 +37,7 @@ public class PromptSecurityFilter {
                     SecurityLevel.BLOCK);
         }
 
-        // ⚠️ SOFT WARNING (allowed but monitored)
+        //  SOFT WARNING (allowed but monitored)
         if (q.contains("confidential")
                 || q.contains("internal")) {
 
@@ -51,7 +51,7 @@ public class PromptSecurityFilter {
 
 
     // =========================
-    // 🔐 RESPONSE CHECK
+    //  RESPONSE CHECK
     // =========================
     public SecurityResult checkResponse(String response) {
 
@@ -61,14 +61,14 @@ public class PromptSecurityFilter {
 
         String r = response.toLowerCase();
 
-        // 🚫 LLM BLOCK MESSAGE (your current issue)
+        //  LLM BLOCK MESSAGE (your current issue)
         if (r.contains("blocked by our content filters")) {
             return new SecurityResult(true,
                     "⚠️ AI response restricted. Showing system data instead.",
                     SecurityLevel.FALLBACK);
         }
 
-        // 🚫 SENSITIVE DATA LEAK
+        //  SENSITIVE DATA LEAK
         if (r.contains("password")
                 || r.contains("api key")
                 || r.contains("token")
@@ -85,7 +85,7 @@ public class PromptSecurityFilter {
 
 
     // =========================
-    // 🔥 RESULT CLASS
+    //  RESULT CLASS
     // =========================
     public static class SecurityResult {
 
@@ -105,7 +105,7 @@ public class PromptSecurityFilter {
     }
 
     // =========================
-    // 🔥 LEVEL ENUM
+    //  LEVEL ENUM
     // =========================
     public enum SecurityLevel {
         ALLOW,

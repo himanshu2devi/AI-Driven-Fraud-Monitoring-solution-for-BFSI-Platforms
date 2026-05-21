@@ -86,7 +86,7 @@ public class FraudReadOnlyAgent {
         if (response.getAnswer() != null) {
             System.out.println("\n🤖 AI Response:");
             System.out.println(response.getAnswer());
-            return response.getAnswer(); // 🔥 RETURN IT
+            return response.getAnswer();
         }
 
         return "";
@@ -98,7 +98,7 @@ public class FraudReadOnlyAgent {
         String userId = "AGENT";
 
         AssistantRequest request = new AssistantRequest();
-        request.setQuestion(query + " all"); // 🔥 trick to bypass LIMIT logic
+        request.setQuestion(query + " all"); 
         request.setSessionId(sessionId);
         request.setAnalystId(userId);
 

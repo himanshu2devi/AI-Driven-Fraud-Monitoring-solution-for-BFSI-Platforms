@@ -19,12 +19,12 @@ public class SwaggerConfig {
                         .description("Backend API documentation for the Transaction Service")
                         .version("2.0.0")
                         .contact(new Contact()
-                                .name("Satwik Mohanty")
-                                .email("satwik0810@gmail.com"))
+                                .name("Himanshu")
+                                .email("himanshudevi1997@gmail.com"))
                         .license(new License().name("Apache 2.0").url("https://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Project GitHub Repository")
-                        .url("https://github.com/satwik-bits/transaction-service"));
+                        .url(""));
     }
 
 }

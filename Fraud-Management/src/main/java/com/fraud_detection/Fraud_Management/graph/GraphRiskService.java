@@ -47,7 +47,7 @@ public class GraphRiskService {
                     "Neo4j Fraud Count: " + fraudCount
             );
 
-            // ✅ Graph risk scoring
+            //  Graph risk scoring
             if (fraudCount >= 10) {
                 return 0.9;
             }

@@ -32,7 +32,7 @@ public class OllamaClient {
         Map<String, Object> response =
                 (Map<String, Object>) restTemplate.postForObject(url, request, Map.class);
 
-        // 🔥 Safety check
+
         if (response == null || response.get("response") == null) {
             throw new RuntimeException("Invalid response from Ollama");
         }

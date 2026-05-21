@@ -31,13 +31,13 @@ public class FraudScoringService {
                 holder.getRuleScore();
 
         // =========================================
-        // 🔹 FEATURE EXTRACTION
+        //  FEATURE EXTRACTION
         // =========================================
         List<Double> features =
                 extractor.extract(tx);
 
         // =========================================
-        // 🔹 CALL PYTHON AI SERVICE
+        //  CALL PYTHON AI SERVICE
         // =========================================
         Map<String, Object> response =
                 aiClient.getFraudScore(features);
@@ -55,7 +55,7 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 AI SCORES
+        //  AI SCORES
         // =========================================
         double aiScore =
                 Double.parseDouble(
@@ -76,7 +76,7 @@ public class FraudScoringService {
                 );
 
         // =========================================
-        // 🔹 GRAPH RISK SCORE
+        //  GRAPH RISK SCORE
         // =========================================
         double graphRisk =
                 graphRiskService
@@ -85,7 +85,7 @@ public class FraudScoringService {
                         );
 
         // =========================================
-        // 🔹 DEBUG LOGS
+        //  DEBUG LOGS
         // =========================================
         System.out.println(
                 "\n========== FRAUD ANALYSIS =========="
@@ -124,7 +124,7 @@ public class FraudScoringService {
                 new StringBuilder();
 
         // =========================================
-        // 🔹 EXISTING RULE REASONS
+        //  EXISTING RULE REASONS
         // =========================================
         if (
                 holder.getReason() != null
@@ -151,7 +151,7 @@ public class FraudScoringService {
                         : "";
 
         // =========================================
-        // 🔹 AI EXPLAINABILITY
+        //  AI EXPLAINABILITY
         // =========================================
         if (mlScore > 0.8) {
 
@@ -168,7 +168,7 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 GRAPH EXPLAINABILITY
+        //  GRAPH EXPLAINABILITY
         // =========================================
         if (graphRisk >= 0.7) {
 
@@ -178,7 +178,7 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 CRITICAL RULE OVERRIDES
+        //  CRITICAL RULE OVERRIDES
         // =========================================
 
         // Blacklisted account
@@ -258,7 +258,7 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 CRITICAL AI OVERRIDE
+        //  CRITICAL AI OVERRIDE
         // =========================================
         if (
 
@@ -305,7 +305,7 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 FINAL HYBRID SCORE
+        //  FINAL HYBRID SCORE
         // =========================================
         double finalScore =
 
@@ -318,7 +318,7 @@ public class FraudScoringService {
                         + (0.10 * anomalyScore);
 
         // =========================================
-        // 🔹 ML SUSPICIOUS OVERRIDE
+        //  ML SUSPICIOUS OVERRIDE
         // =========================================
         if (
                 mlScore > 0.7
@@ -339,7 +339,7 @@ public class FraudScoringService {
         );
 
         // =========================================
-        // 🔹 FINAL DECISION
+        //  FINAL DECISION
         // =========================================
         if (finalScore >= 0.70) {
 
@@ -381,7 +381,7 @@ public class FraudScoringService {
         }
 
         // =========================================
-        // 🔹 FINAL REASON FORMAT
+        //  FINAL REASON FORMAT
         // =========================================
         String reasonText =
                 finalReason.toString();
@@ -404,7 +404,7 @@ public class FraudScoringService {
     }
 
     // =========================================
-    // 🔹 FORMAT REASONS
+    //  FORMAT REASONS
     // =========================================
     private String formatReasons(
             String reasonText

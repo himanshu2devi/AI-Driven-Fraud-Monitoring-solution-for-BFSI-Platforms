@@ -239,9 +239,9 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                     }
 
                     return buildResponse(
-                            "FRAUD_INSIGHTS",   // ✅ VERY IMPORTANT
+                            "FRAUD_INSIGHTS",
                             "📊 Fraud Insights",
-                            data,               // ✅ MUST NOT BE NULL
+                            data,
                             null,
                             "PostgreSQL Database"
                     );
@@ -263,9 +263,9 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                     }
 
                     return buildResponse(
-                            "FRAUD_PATTERNS",   // ✅ CRITICAL
+                            "FRAUD_PATTERNS",
                             "Fraud Patterns",
-                            data,               // ✅ structured data
+                            data,
                             null,
                             "PostgreSQL Database"
                     );
@@ -301,7 +301,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                         );
                     }
 
-                    // ✅ NORMAL TABLE RESPONSE
+                    //  NORMAL TABLE RESPONSE
                     AssistantResponse response = buildResponse(
                             "FAILED_TRANSACTIONS",
                             "Failed Transactions",
@@ -341,7 +341,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                     List<Map<String, Object>> data;
 
                     // ===============================
-                    // 🔥 RANGE QUERY FIX (ADDED)
+                    //  RANGE QUERYs
                     // ===============================
                     if (normalizedQ.contains("between") && normalizedQ.matches(".*\\d+.*")) {
 
@@ -365,7 +365,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                     }
 
                     // ===============================
-                    // EXISTING LOGIC (UNCHANGED)
+
                     // ===============================
                     else if (hasLastKeyword && !hasUserKeyword) {
                         data = getRecentTransactions(limit);
@@ -391,7 +391,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                     }
 
                     // ===============================
-                    // COMMON RESPONSE (UNCHANGED)
+                    // COMMON RESPONSE
                     // ===============================
                     if (data == null || data.isEmpty()) {
                         return buildResponse(
@@ -472,7 +472,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
                                 "System"
                         );
                     }
-                    // ✅ NORMAL TABLE
+                    //  NORMAL TABLE
                     AssistantResponse response = buildResponse(
                             "FRAUD_TRANSACTIONS",
                             title,
@@ -727,7 +727,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
         }
 
         // ===============================
-        // 🧠 ANALYSIS QUERIES (WHY / REASON)
+        //  ANALYSIS QUERIES (WHY / REASON)
         // ===============================
         if ((q.contains("why") || q.contains("reason") || q.contains("analysis"))
                 && hasTransaction) {
@@ -744,7 +744,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
         }
 
         // ===============================
-        // 🧠 CONCEPTUAL QUESTIONS (KB)
+        //  CONCEPTUAL QUESTIONS (KB)
         // ===============================
         if ((q.contains("what")
                 || q.contains("difference")
@@ -981,7 +981,7 @@ public class FraudAssistantServiceImpl implements FraudAssistantService {
     private AssistantResponse handleFraudCheck(String sessionId, String userId, String question) {
 
         // ===============================
-        // 🔐 INPUT SECURITY
+        //  INPUT SECURITY
         // ===============================
         var inputCheck = securityFilter.checkInput(question);
 
@@ -1068,7 +1068,7 @@ Transaction Logs:
 
             System.out.println("LLM ERROR: " + e.getMessage());
 
-            // 🔥 FALLBACK TO DB DATA
+            //  FALLBACK TO DB DATA
             return buildResponse(
                     "FRAUD_TRANSACTIONS",
                     "Fraud Transactions",
@@ -1079,7 +1079,7 @@ Transaction Logs:
         }
 
 // ===============================
-// 🔐 RESPONSE SECURITY (REFINED)
+//  RESPONSE SECURITY (REFINED)
 // ===============================
         var resCheck = securityFilter.checkResponse(analysis);
 
@@ -1087,12 +1087,12 @@ Transaction Logs:
 
             System.out.println("⚠️ Security BLOCK → sanitizing response");
 
-            // ✅ Never fully block — trim instead
+            //  trim
             if (analysis != null && analysis.length() > 400) {
                 analysis = analysis.substring(0, 400);
             }
 
-            // Optional soft note (not scary)
+
             analysis = analysis + "\n\n(Note: Some sensitive details were omitted.)";
         }
 
@@ -1100,7 +1100,7 @@ Transaction Logs:
 
             System.out.println("⚠️ Security FALLBACK → partial response");
 
-            // ✅ Keep content but add light disclaimer
+            //  light disclaimer
             analysis = "ℹ️ Partial insights:\n\n" + analysis;
         }
         // ===============================
@@ -1165,7 +1165,7 @@ Fraud Analysis:
 
         return switch (type) {
 
-            // 🚨 FRAUD ANALYSIS
+            //  FRAUD ANALYSIS
             case "FRAUD_ANALYSIS" -> List.of(
                     "Why is this fraud?",
                     "Show transactions for this account",
@@ -1173,7 +1173,7 @@ Fraud Analysis:
                     "View fraud insights"
             );
 
-            // 💳 TRANSACTIONS
+            //  TRANSACTIONS
             case "TRANSACTIONS" -> List.of(
                     "Show failed transactions",
                     "Show successful transactions",
@@ -1193,7 +1193,7 @@ Fraud Analysis:
                     "View fraud insights"
             );
 
-            // 🚫 BLOCKED
+            //  BLOCKED
             case "BLOCKED_ACCOUNT", "BLOCKED_ACCOUNTS" -> List.of(
                     "Why is this account blocked?",
                     "Show transactions for this account",
@@ -1201,21 +1201,21 @@ Fraud Analysis:
                     "View fraud insights"
             );
 
-            // 📊 INSIGHTS
+            //  INSIGHTS
             case "FRAUD_INSIGHTS" -> List.of(
                     "Show fraud transactions",
                     "Show top fraud patterns",
                     "Check blocked accounts"
             );
 
-            // 🔍 PATTERNS
+            //  PATTERNS
             case "FRAUD_PATTERNS" -> List.of(
                     "Show fraud transactions",
                     "Check similar fraud cases",
                     "View fraud insights"
             );
 
-            // 📘 KB
+            //  KB
             case "KB" -> List.of(
                     "Show fraud transactions",
                     "Explain fraud rules",
@@ -1223,14 +1223,14 @@ Fraud Analysis:
                     "Show suspicious patterns"
             );
 
-            // ❌ ERROR / EMPTY
+            //  ERROR / EMPTY
             case "ERROR" -> List.of(
                     "Show fraud transactions",
                     "View fraud insights",
                     "Check blocked accounts"
             );
 
-            // 🌟 DEFAULT
+            //  DEFAULT
             default -> List.of(
                     "Show fraud transactions",
                     "Show failed transactions",
@@ -1268,7 +1268,7 @@ Fraud Analysis:
             structured.append("\n");
         }
 
-        // 🔥 Send structured data to LLM for polishing
+        //  Send structured data to LLM for polishing
         String prompt = """
 Convert the following structured data into clean, professional bullet points for a fraud analyst.
 
@@ -1287,7 +1287,7 @@ DATA:
 
 
     // ===============================
-// 🤖 COMMON AI ANALYSIS METHOD (NEW)
+//  COMMON AI ANALYSIS METHOD
 // ===============================
     private String generateAIAnalysis(List<Map<String, Object>> data, String question) {
 
@@ -1327,7 +1327,7 @@ Keep it short and clear.
 
             System.out.println("❌ LLM FAILED: " + e.getMessage());
 
-            // 🔥 VERY IMPORTANT: NEVER RETURN NULL
+
             return "AI service unavailable. Showing transaction data only.";
         }
     }
@@ -1469,7 +1469,7 @@ Question:
         System.out.println("KB Query: " + cleanQuery);
 
         // ===============================
-        // 🔐 INPUT SECURITY
+        //  INPUT SECURITY
         // ===============================
         var inputCheck = securityFilter.checkInput(cleanQuery);
 
@@ -1494,7 +1494,7 @@ Question:
         }
 
         // ===============================
-        // 🔐 RESPONSE SECURITY
+        //  RESPONSE SECURITY
         // ===============================
         var resCheck = securityFilter.checkResponse(ragAnswer);
 
@@ -1570,7 +1570,7 @@ Question:
             return databaseQueryService.executeQuery(sql, limit);
         }
 
-        // 🔥 DEFAULT (BOTH)
+        //  DEFAULT (BOTH)
         sql = """
     SELECT transaction_id, account_from, account_to, amount, status, reason,timestamp
     FROM transaction_logs
@@ -1936,7 +1936,7 @@ Top reasons:
 
                         if (hasBetween || hasAmountFilter) {
 
-                            // 🔥 Fetch full data (NO LIMIT)
+                            //  Fetch full data (NO LIMIT)
                             data = databaseQueryService.executeQuery("""
             SELECT 
                 accnofrom AS from_account, 
@@ -1949,7 +1949,7 @@ Top reasons:
 
                         } else {
 
-                            // ✅ Keep existing behavior
+                            //  Keep existing behavior
                             data = getRecentTransactions(limit);
                         }
                     }
@@ -2009,7 +2009,7 @@ Top reasons:
         String accNo = extractAccountNumber(normalizedQ);
 
         // ===============================
-        // 🔥 FIX: CALCULATE ONCE (NOT PER ROW)
+        //  FIX: CALCULATE ONCE (NOT PER ROW)
         // ===============================
         double[] range = extractBetweenRange(normalizedQ);
 
@@ -2037,7 +2037,7 @@ Top reasons:
             }
 
             // ===============================
-            // BETWEEN RANGE FILTER (FIXED)
+            // BETWEEN RANGE FILTER
             // ===============================
             if (range != null && row.get("amount") != null) {
 
@@ -2049,7 +2049,7 @@ Top reasons:
             }
 
             // ===============================
-            // ACCOUNT FILTER (FINAL FIX)
+            // ACCOUNT FILTER
             // ===============================
             if (accNo != null) {
 
@@ -2103,7 +2103,7 @@ Top reasons:
         q = q.replace("in range", "between");
         q = q.replace("from", "between");
 
-        // 🔥 flexible regex
+        //  flexible regex
         Pattern p = Pattern.compile(
                 "between\\s+(?:amount\\s*)?(\\d+(?:\\.\\d+)?)\\s*(k|lakh)?\\s*(?:and|to)\\s*(\\d+(?:\\.\\d+)?)\\s*(k|lakh)?"
         );
@@ -2115,7 +2115,7 @@ Top reasons:
             double min = parseAmount(m.group(1), m.group(2));
             double max = parseAmount(m.group(3), m.group(4));
 
-            System.out.println("✅ BETWEEN detected: " + min + " - " + max);
+            System.out.println(" BETWEEN detected: " + min + " - " + max);
 
             return new double[]{min, max};
         }
@@ -2170,7 +2170,7 @@ User Query:
 
             System.out.println("LLM RAW: " + response);
 
-// 🔥 CLEAN RESPONSE (VERY IMPORTANT)
+//  CLEAN RESPONSE (VERY IMPORTANT)
             response = response
                     .replace("```json", "")
                     .replace("```", "")
@@ -2244,7 +2244,7 @@ User Query:
 
         List<Map<String, Object>> data;
 
-        // 🔥 LIGHT DATA ONLY
+        //  LIGHT DATA ONLY
         if ("FAILED_TRANSACTIONS".equals(intent)) {
             data = getTransactionsByStatus("FAILED", 5);
         } else if ("FRAUD_TRANSACTIONS".equals(intent)) {

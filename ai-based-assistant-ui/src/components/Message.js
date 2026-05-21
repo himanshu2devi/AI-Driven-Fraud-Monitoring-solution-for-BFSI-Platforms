@@ -89,7 +89,7 @@ if (message.type === "ERROR") {
   const bubbleClass = `message-bubble ${isUser ? "user-bubble" : "bot-bubble"}`;
 
   // =========================
-  // 🔥 AUTO-DETECT TABLE DATA
+  //  AUTO-DETECT TABLE DATA
   // =========================
   const isTransactionData =
     message.data &&
